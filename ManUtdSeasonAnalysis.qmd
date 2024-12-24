@@ -1,0 +1,176 @@
+---
+title: "ManUtdAnalysis"
+output:
+  html_document:
+    df_print: paged
+    code_folding: hide
+    self_contained: true
+editor: visual
+---
+
+## Manchester United 22/23 Season Analysis
+
+```{r}
+library(tidyverse)
+manutd <- read_csv("ManUtd 2023 Match Statistics.csv", show_col_types = FALSE)
+
+manutd
+```
+
+### Introduction
+
+This report evaluates Manchester United's performance during the 22/23 season using statistical data to identify strengths, weaknesses, and areas for improvement. By analyzing key metrics such as goals scored, defensive stability, and performance against top teams, this report provides actionable insights for the team's future development.
+
+### Questions Addressed
+
+1.  What were Manchester United's overall strengths and weaknesses in the 22/23 season?
+2.  How did they perform at home compared to away?
+3.  How consistent was their points accumulation throughout the season?
+4.  How efficient was their attack in converting chances into goals?
+5.  How stable were they defensively?
+6.  How did they perform against the Top 6 teams?
+
+### Data Summary/Performance Analysis
+
+```{r}
+
+summary_stats <- data.frame(
+  Metric = c(
+    "Total Goals Scored",
+    "Total Goals Conceded",
+    "Goal Difference",
+    "Clean Sheets",
+    "Expected Goals (xG)"
+  ),
+  Value = c(
+    sum(manutd$Goals, na.rm = TRUE),
+    sum(manutd$`Goals Against`, na.rm = TRUE),
+    sum(manutd$Goals, na.rm = TRUE) - sum(manutd$`Goals Against`, na.rm = TRUE),
+    sum(manutd$`Goals Against` == 0, na.rm = TRUE),
+    round(sum(manutd$`Expected Goals`, na.rm = TRUE))
+  )
+)
+
+
+print(summary_stats)
+```
+
+1.  Manchester United's performance in the 22/23 season highlights both strengths and areas for improvement. Despite creating numerous chances with an expected goals (xG) of 68, the team only managed to score 58 goals, indicating a need for better finishing and possibly recruiting a clinical striker to convert opportunities more effectively. Their defensive strength, evidenced by 17 clean sheets, should remain a cornerstone of their strategy, but conceding 43 goals suggests occasional lapses that could be addressed through improved organization, particularly against counterattacks and set pieces. Tactically, the team could benefit from a more aggressive approach in matches against weaker opponents to capitalize on their chance creation and from focusing on replicating their strong home performances during away games. By enhancing finishing, solidifying defensive structure, and optimizing tactical flexibility, Manchester United could aim to increase their goal tally and maintain their clean sheet count, positioning them as stronger contenders in the next season.
+
+### Home vs Away Performance
+
+```{r}
+
+ggplot(manutd, aes(x = Result, fill = Venue)) +
+  geom_bar(position = "dodge") +
+  labs(
+    title = "Home vs Away Results",
+    x = "Match Result",
+    y = "Count",
+    fill = "Venue"
+  ) +
+  theme_minimal()
+```
+
+2.  Manchester United's performance in home and away matches during the 22/23 season shows a distinct advantage at their home ground. The team recorded significantly more wins at Old Trafford compared to away venues, underscoring the positive impact of playing on familiar turf with home support. However, the number of losses away from home indicates a potential vulnerability in adapting to external conditions. Draws appear evenly distributed between home and away matches, suggesting consistency in resilience across venues. To improve away performance, Manchester United could focus on strategies to mitigate the psychological and tactical challenges of playing away, such as simulating away conditions during training or employing more conservative tactics to secure points in challenging environments. These adjustments could help balance their performance across venues, making them a more consistent force throughout the season.
+
+### Points Accumulation
+
+```{r}
+
+manutd <- manutd %>% mutate(
+  Match = row_number(),
+  CumulativePoints = cumsum(Points)
+)
+
+ggplot(manutd, aes(x = Match, y = CumulativePoints)) +
+  geom_line(color = "blue", linewidth = 1) +
+  labs(
+    title = "Cumulative Points Over the Season",
+    x = "Match Number",
+    y = "Cumulative Points"
+  ) +
+  theme_minimal()
+```
+
+3.  Manchester United’s cumulative points progression during the 22/23 season shows a steady and consistent upward trend, reflecting their ability to maintain form throughout the campaign. The linear nature of the graph indicates consistent point accumulation, with no significant slumps or spikes. This suggests a balanced performance across fixtures, avoiding long periods of poor results. However, there appears to be room for improvement in converting potential wins into points earlier in the season to establish a stronger lead in the standings. By focusing on improving efficiency in matches against weaker opponents and maintaining momentum after key victories, the team could potentially accelerate their points accumulation rate in future seasons, making them more competitive for title challenges.
+
+### Goal Conversion
+
+```{r}
+
+shooting_summary <- data.frame(
+  Metric = c("Total Shots", "Shots on Target", "Goals Scored"),
+  Value = c(
+    sum(manutd$Shots, na.rm = TRUE),
+    sum(manutd$`Shots on Target`, na.rm = TRUE),
+    sum(manutd$Goals, na.rm = TRUE)
+  )
+)
+
+ggplot(shooting_summary, aes(x = Metric, y = Value, fill = Metric)) +
+  geom_bar(stat = "identity") +
+  labs(
+    title = "Shooting and Goal Conversion Summary",
+    x = "Metric",
+    y = "Value"
+  ) +
+  theme_minimal()
+```
+
+4.  The goal conversion summary highlights Manchester United's inefficiency in translating their high volume of total shots into goals during the 22/23 season. While the team registered a significant number of total shots, only a fraction of these were on target, and an even smaller proportion resulted in goals. This suggests a need for improved shot accuracy and decision-making in front of goal. By focusing on creating higher-quality chances closer to the goal and refining their shooting techniques, Manchester United could improve their conversion rates. Tactical adjustments, such as encouraging more disciplined shot selection and increasing support for forwards in the final third, could significantly enhance goal-scoring efficiency and overall offensive output in future matches.
+
+### Defensive Analysis
+
+Clean Sheets Percentage
+
+```{r}
+
+clean_sheets <- sum(manutd$`Goals Against` == 0, na.rm = TRUE)
+total_matches <- nrow(manutd)
+clean_sheet_percentage <- (clean_sheets / total_matches) * 100
+
+cat("Clean Sheets:", clean_sheets, "\nClean Sheet Percentage:", round(clean_sheet_percentage, 2), "%\n")
+```
+
+Distribution of Goals Conceded
+
+```{r}
+
+ggplot(manutd, aes(x = `Goals Against`)) +
+  geom_histogram(binwidth = 1, fill = "blue", color = "black") +
+  labs(
+    title = "Distribution of Goals Conceded",
+    x = "Goals Conceded",
+    y = "Frequency"
+  ) +
+  theme_minimal()
+```
+
+5.  Manchester United's defensive performance during the 22/23 season was a key strength, highlighted by **17 clean sheets**, accounting for an impressive **44.74%** of their matches. This demonstrates a robust defensive setup that consistently neutralized opposing attacks. However, the distribution of goals conceded reveals a pattern where the team mostly allowed **0-2 goals per game**, indicating solid consistency. Nonetheless, the occasional occurrence of conceding 4 or more goals in a match suggests lapses in defensive concentration or tactical mismatches against certain opponents. To enhance defensive reliability, Manchester United could focus on reinforcing defensive depth to handle high-pressure scenarios and analyzing matches with higher goal concessions to identify and rectify tactical vulnerabilities. Strengthening coordination during set-pieces and transitions could further minimize such outliers in future seasons.
+
+### Performance against the Top 6
+
+```{r}
+
+top_6_opponents <- c("Manchester City", "Liverpool", "Arsenal", "Tottenham", "Chelsea", "Newcastle")
+
+manutd_top6 <- manutd %>% filter(Opponent %in% top_6_opponents)
+
+ggplot(manutd_top6, aes(x = Opponent)) +
+  geom_bar(aes(y = Goals, fill = "Goals Scored"), stat = "identity") +
+  geom_bar(aes(y = `Goals Against`, fill = "Goals Conceded"), stat = "identity") +
+  labs(
+    title = "Performance Against Top 6 Teams",
+    x = "Opponent",
+    y = "Goals"
+  ) +
+  theme_minimal()
+
+```
+
+6.  Manchester United's performance against the Top 6 teams in the 22/23 season highlights some key patterns. The team struggled against stronger opponents such as **Liverpool** and **Manchester City**, conceding significantly more goals than they scored. This indicates potential defensive vulnerabilities and tactical mismatches in high-pressure games against elite teams. On the other hand, their performance was more balanced against **Chelsea** and **Tottenham**, suggesting the ability to compete evenly with certain top-tier teams. To improve outcomes against tougher opponents, Manchester United could adopt more pragmatic tactics, focusing on defensive solidity and counterattacking strategies. Additionally, analyzing weaknesses exploited by teams like Liverpool and City can help fine-tune defensive structures and player roles for future matches. Enhanced preparation and a flexible tactical approach could lead to better results against the league's strongest teams.
+
+### Conclusion
+
+Manchester United's 22/23 season showcased strong defensive capabilities with a high number of clean sheets and consistent points accumulation. However, inefficiencies in goal conversion and struggles against top teams highlight areas for improvement. The team's performance at home was a significant strength, but replicating this success in away matches remains a challenge.
