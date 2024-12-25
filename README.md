@@ -14,7 +14,7 @@ This project evaluates Manchester United's performance during the 2022/2023 seas
 ## Files in this Repository
 
 - **ManUtdSeasonAnalysis.qmd**: Quarto Markdown file containing the source code for the analysis.
-- **ManUtdSeasonAnalysis.html**: Rendered HTML report of the analysis.
+- **Index.html**: Rendered HTML report of the analysis.
 - **ManUtd 2023 Match Statistics.csv**: Contains the datasets used for this analysis.
 - **README.md**: Documentation for the repository.
 
@@ -51,7 +51,7 @@ To reproduce the analysis, you'll need:
 
 The rendered HTML report is available at the following link:
 
-[View Report](https://<SaadShahh>.github.io/ManUtd-Analysis/)
+[View Report](https://SaadShahh.github.io/ManUtd-Analysis/)
 
-If viewing locally, open the `ManUtd-Analysis.html` file in any web browser.
+If viewing locally, open the `Index.html` file in any web browser.
 
