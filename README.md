@@ -17,6 +17,7 @@ This project evaluates Manchester United's performance during the 2022/2023 seas
 - **ManUtdSeasonAnalysis.html**: Rendered HTML report of the analysis.
 - **ManUtd 2023 Match Statistics.csv**: Contains the datasets used for this analysis.
 - **README.md**: Documentation for the repository.
+- **ManUtdSeasonAnalysis_files.zip**: Includes figures from the report for viewing
 
 ## Key Findings
 
@@ -49,5 +50,5 @@ To reproduce the analysis, you'll need:
 
 ## Viewing the Report
 
-If viewing locally, open the `ManUtdSeasonAnalysis.html` file in any web browser.
+If viewing locally, open the `ManUtdSeasonAnalysis.html` file in any web browser, the graphs will not show, to view the graphs, open them separately from `ManUtdSeasonAnalysis_files.zip` in the figures folder.
 
